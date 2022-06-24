@@ -1,0 +1,8 @@
+.devcontainer/
+.vscode/
+backend/.devcontainer/
+backend/db.sqlite3
+mysql/db_data/
+frontend/app/node_modules/
+frontend/app/build/
+mysql/db_data/
