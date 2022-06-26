@@ -15,15 +15,25 @@ services:
     tty: true
     depends_on:
       - mysql
+    networks:
+      - frontend
+      - backend
 
   frontend:
     container_name: frontend
     build:
       context: .
       dockerfile: ./frontend/Dockerfile
-    command: npm -g config set registry http://registry.npmjs.org/
+    command: sh -c "npm -g config set registry http://registry.npmjs.org/ &&
+             cd /app && npm start"
     volumes:
       - ./frontend/app:/app:cached
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    networks:
+      - frontend
 
   nginx:
     container_name: nginx
@@ -37,6 +47,8 @@ services:
       - ./frontend/app/build:/var/www/http
     depends_on:
       - backend
+      - frontend
+    networks:
       - frontend
 
   mysql:
@@ -56,3 +68,11 @@ services:
       - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
       - 3306:3306
+    networks:
+      - backend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
